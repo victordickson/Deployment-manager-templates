@@ -1,0 +1,95 @@
+imports:
+- path: autonetwork-template.jinja
+- path: customnetwork-template.jinja
+- path: subnetwork-template.jinja
+- path: firewall-template.jinja
+- path: instance-template.jinja
+resources:
+- name: mynetwork
+  type: autonetwork-template.jinja
+- name: mynetwork-allow-http-ssh-rdp
+  type: firewall-template.jinja
+  properties:
+    network: $(ref.mynetwork.selfLink)
+    IPProtocol: TCP
+    Port: [22, 80, 3389]
+- name: mynetwork-allow-icmp
+  type: firewall-template.jinja
+  properties:
+    network: $(ref.mynetwork.selfLink)
+    IPProtocol: ICMP
+    Port: []
+- name: managementnet
+  type: customnetwork-template.jinja
+- name: managementsubnet-us
+  type: subnetwork-template.jinja
+  properties:
+    ipCidrRange: 10.130.0.0/20
+    network: $(ref.managementnet.selfLink)
+    region: us-central1
+- name: managementnet-allow-http-ssh-rdp
+  type: firewall-template.jinja
+  properties:
+    network: $(ref.managementnet.selfLink)
+    IPProtocol: TCP
+    Port: [22, 80, 3389]
+- name: managementnet-allow-icmp
+  type: firewall-template.jinja
+  properties:
+    network: $(ref.managementnet.selfLink)
+    IPProtocol: ICMP
+    Port: []
+- name: privatenet
+  type: customnetwork-template.jinja
+- name: privatesubnet-us
+  type: subnetwork-template.jinja
+  properties:
+    ipCidrRange: 172.16.0.0/24
+    network: $(ref.privatenet.selfLink)
+    region: us-central1
+- name: privatesubnet-eu
+  type: subnetwork-template.jinja
+  properties:
+    ipCidrRange: 172.20.0.0/24
+    network: $(ref.privatenet.selfLink)
+    region: europe-west1
+- name: privatenet-allow-http-ssh-rdp
+  type: firewall-template.jinja
+  properties:
+    network: $(ref.privatenet.selfLink)
+    IPProtocol: TCP
+    Port: [22, 80, 3389]
+- name: privatenet-allow-icmp
+  type: firewall-template.jinja
+  properties:
+    network: $(ref.privatenet.selfLink)
+    IPProtocol: ICMP
+    Port: []
+- name: mynet-us-vm
+  type: instance-template.jinja
+  properties:
+    zone: us-central1-a
+    machineType: n1-standard-1
+    network: $(ref.mynetwork.selfLink)
+    subnetwork: regions/us-central1/subnetworks/mynetwork
+- name: mynet-eu-vm
+  type: instance-template.jinja
+  properties:
+    zone: europe-west1-d
+    machineType: n1-standard-1
+    network: $(ref.mynetwork.selfLink)  
+    subnetwork: regions/europe-west1/subnetworks/mynetwork
+- name: privatenet-us-vm
+  type: instance-template.jinja
+  properties:
+    zone: us-central1-a
+    machineType: n1-standard-1
+    network: $(ref.privatenet.selfLink)
+    subnetwork: $(ref.privatesubnet-us.selfLink)
+- name: managementnet-us-vm
+  type: instance-template.jinja
+  properties:
+    zone: us-central1-a
+    machineType: n1-standard-1
+    network: $(ref.managementnet.selfLink)
+    subnetwork: $(ref.managementsubnet-us.selfLink)
