@@ -17,7 +17,7 @@ properties:
   network:
     type: string
     description: Network URL i.e. projects/project/global/networks/network
-    default: global/networks/mynetwork
+    default: global/networks/place network here(e.g mynetwork)
   subnet:
     type: string
     description: Subnet URL i.e regions/region/subnetworks/subnetwork
