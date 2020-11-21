@@ -1,0 +1,23 @@
+{% set deployment_name = env['deployment']  %}
+{% set instance_name = deployment_name + '-instance'  %}
+{% set database_name = deployment_name + '-db'  %}
+{% set region = 'us-central1'  %}
+{% set tier = 'db-n1-standard-1'  %}
+
+resources:
+- name: {{ instance_name }}
+  type: gcp-types/sqladmin-v1beta4:instances
+  properties:
+    region: {{ region }}
+    settings:
+      tier: {{ tier }}
+      backupConfiguration:
+        binaryLogEnabled: true
+        enabled: true
+
+- name: {{ database_name }}
+  type: gcp-types/sqladmin-v1beta4:databases
+  properties:
+    name: {{ database_name }}
+    instance: $(ref.{{ instance_name }}.name)
+    charset: utf8
