@@ -1,0 +1,18 @@
+resources:
+- name: appserver
+  type: compute.v1.instance
+  properties:
+    zone: us-west1-b
+    machineType: https://www.googleapis.com/compute/v1/projects/PROJECT_ID/zones/us-west1-b/machineTypes/f1-micro
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/PROJECT_ID/global/networks/mynetwork(put main network here)
+      accessConfigs:
+      - name: External_NAT
+        type: ONE_TO_ONE_NAT
+    disks:
+    - type: PERSISTENT
+      deviceName: boot
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20170816
